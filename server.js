@@ -45,10 +45,8 @@
 
 //         const recordId = resourceResponse.data.recordId;
 
-//         // Prepare data for createActivity API call
-//         const currentDate = new Date();
-//         const formattedDate = currentDate.toISOString().split('T')[0];
-//         const formattedTime = currentDate.toTimeString().split(' ')[0];
+//         // Use the local date and time from the client
+//         const { localDateTime } = formData.trackerrms.createResource;
 
 //         const activityData = {
 //             trackerrms: {
@@ -56,8 +54,8 @@
 //                     activity: {
 //                         subject: 'New Activity',
 //                         type: 'Email',
-//                         date: formattedDate,
-//                         time: formattedTime,
+//                         date: localDateTime.date,
+//                         time: localDateTime.time,
 //                         status: 'Completed',
 //                         priority: 'Medium',
 //                         contactType: 'Outbound',
@@ -143,7 +141,7 @@ app.post('/api/createResource', async (req, res) => {
             { headers: { 'Content-Type': 'application/json' } }
         );
 
-        const recordId = resourceResponse.data.recordId;
+        const resourceId = resourceResponse.data.recordId;
 
         // Use the local date and time from the client
         const { localDateTime } = formData.trackerrms.createResource;
@@ -161,7 +159,7 @@ app.post('/api/createResource', async (req, res) => {
                         contactType: 'Outbound',
                         note: 'Associated with new resource creation',
                         linkRecordType: 'R',
-                        linkRecordId: recordId,
+                        linkRecordId: resourceId,
                     },
                 },
             },
@@ -183,10 +181,49 @@ app.post('/api/createResource', async (req, res) => {
             }
         );
 
+        const opportunityId = req.body.opportunityId; // Assuming you have this in your request body
+
         res.status(200).json({
             resource: resourceResponse.data,
             activity: activityResponse.data,
+            resourceId: resourceId,
+            opportunityId: opportunityId,
         });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/resourceApplication', async (req, res) => {
+    const { resourceId, opportunityId } = req.body;
+    const credentials = {
+        username: process.env.TRACKERRMS_USERNAME,
+        password: process.env.TRACKERRMS_PASSWORD,
+    };
+
+    const applicationData = {
+        trackerrms: {
+            resourceApplication: {
+                credentials: credentials,
+                instructions: {
+                    opportunityid: opportunityId,
+                    resourceid: resourceId,
+                    assigntolist: 'short',
+                    shortlistedby: 'user',
+                    source: 'Website',
+                },
+            },
+        },
+    };
+
+    try {
+        const applicationResponse = await axios.post(
+            'https://evoapius.tracker-rms.com/api/widget/resourceApplication',
+            applicationData,
+            { headers: { 'Content-Type': 'application/json' } }
+        );
+
+        res.status(200).json(applicationResponse.data);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -195,4 +232,3 @@ app.post('/api/createResource', async (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
-
