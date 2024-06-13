@@ -96,6 +96,7 @@
 //     console.log(`Server is running on port ${port}`);
 // });
 
+
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
@@ -181,7 +182,8 @@ app.post('/api/createResource', async (req, res) => {
             }
         );
 
-        // Data for resourceApplication API call
+        // Third API call to assign the resource to a job
+        const opportunityId = ''; // Add logic to fetch opportunity ID
         const resourceApplicationData = {
             trackerrms: {
                 resourceApplication: {
@@ -190,21 +192,25 @@ app.post('/api/createResource', async (req, res) => {
                         password: process.env.TRACKERRMS_PASSWORD,
                     },
                     instructions: {
-                        opportunityid: formData.trackerrms.resourceApplication.instructions.opportunityid,
+                        opportunityid: opportunityId,
                         resourceid: recordId,
-                        assigntolist: formData.trackerrms.resourceApplication.instructions.assigntolist,
-                        shortlistedby: formData.trackerrms.resourceApplication.instructions.shortlistedby,
-                        source: formData.trackerrms.resourceApplication.instructions.source,
+                        assigntolist: 'short',
+                        shortlistedby: 'resource',
+                        source: 'Website',
                     },
                 },
             },
         };
 
-        // Third API call to assign resource to a job
         const resourceApplicationResponse = await axios.post(
             'https://evoapius.tracker-rms.com/api/widget/resourceApplication',
             resourceApplicationData,
-            { headers: { 'Content-Type': 'application/json' } }
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: authHeader,
+                },
+            }
         );
 
         res.status(200).json({
