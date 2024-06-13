@@ -183,7 +183,8 @@ app.post('/api/createResource', async (req, res) => {
         );
 
         // Third API call to assign the resource to a job
-        const opportunityId = ''; // Add logic to fetch opportunity ID
+        const { opportunityid } = formData.trackerrms.createResource.instructions;
+
         const resourceApplicationData = {
             trackerrms: {
                 resourceApplication: {
@@ -192,7 +193,7 @@ app.post('/api/createResource', async (req, res) => {
                         password: process.env.TRACKERRMS_PASSWORD,
                     },
                     instructions: {
-                        opportunityid: opportunityId,
+                        opportunityid: opportunityid,
                         resourceid: recordId,
                         assigntolist: 'short',
                         shortlistedby: 'resource',
