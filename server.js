@@ -595,18 +595,20 @@ app.post('/api/createResource', async (req, res) => {
                     },
                     instructions: {
                         opportunityid: jobCode,
-                        shortlistedby: "resource",
-                        source: "Website",
+                        resourceid: recordId,
+                        shortlistedby: 'resource',
+                        source: 'Website',
                     },
                 },
             },
         };
 
+        // Authorization header
         const authHeader = 'Basic ' + Buffer.from(
             `${process.env.TRACKERRMS_USERNAME}:${process.env.TRACKERRMS_PASSWORD}`
         ).toString('base64');
 
-        // First activity creation
+        // First activity API call
         const activityResponse1 = await axios.post(
             'https://evoapius.tracker-rms.com/api/widget/createActivity',
             activityData1,
@@ -618,7 +620,7 @@ app.post('/api/createResource', async (req, res) => {
             }
         );
 
-        // Second activity creation
+        // Second activity API call
         const activityResponse2 = await axios.post(
             'https://evoapius.tracker-rms.com/api/widget/createActivity',
             activityData2,
@@ -630,7 +632,7 @@ app.post('/api/createResource', async (req, res) => {
             }
         );
 
-        // Resource application creation
+        // Resource application API call
         const resourceApplicationResponse = await axios.post(
             'https://evoapius.tracker-rms.com/api/widget/resourceApplication',
             resourceApplicationData,
