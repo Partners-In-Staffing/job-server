@@ -180,7 +180,7 @@ app.post('/api/createResource', async (req, res) => {
                         contactType: 'Outbound',
                         note: 'Associated with new resource creation',
                         linkRecordType: 'O',
-                        linkRecordId: recordId,
+                        linkRecordId: jobCode,
                     },
                 },
             },
