@@ -146,7 +146,8 @@ app.post('/api/createResource', async (req, res) => {
         // Use the local date and time from the client
         const { localDateTime } = formData.trackerrms.createResource;
 
-        const activityData = {
+        // First activity data
+        const activityData1 = {
             trackerrms: {
                 createActivity: {
                     activity: {
@@ -158,21 +159,52 @@ app.post('/api/createResource', async (req, res) => {
                         priority: 'Medium',
                         contactType: 'Outbound',
                         note: 'Associated with new resource creation',
-                        linkRecordType: ['R', 'O'],
+                        linkRecordType: 'R',
                         linkRecordId: recordId,
                     },
                 },
             },
         };
 
-        // Second API call to create activity
+        // Second activity data
+        const activityData2 = {
+            trackerrms: {
+                createActivity: {
+                    activity: {
+                        subject: 'New Activity',
+                        type: 'Email',
+                        date: localDateTime.date,
+                        time: localDateTime.time,
+                        status: 'Completed',
+                        priority: 'Medium',
+                        contactType: 'Outbound',
+                        note: 'Associated with new resource creation',
+                        linkRecordType: 'O',
+                        linkRecordId: recordId,
+                    },
+                },
+            },
+        };
+
+        // Second API call to create first activity
         const authHeader = 'Basic ' + Buffer.from(
             `${process.env.TRACKERRMS_USERNAME}:${process.env.TRACKERRMS_PASSWORD}`
         ).toString('base64');
 
-        const activityResponse = await axios.post(
+        const activityResponse1 = await axios.post(
             'https://evoapius.tracker-rms.com/api/widget/createActivity',
-            activityData,
+            activityData1,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: authHeader,
+                },
+            }
+        );
+
+        const activityResponse2 = await axios.post(
+            'https://evoapius.tracker-rms.com/api/widget/createActivity',
+            activityData2,
             {
                 headers: {
                     'Content-Type': 'application/json',
@@ -183,7 +215,8 @@ app.post('/api/createResource', async (req, res) => {
 
         res.status(200).json({
             resource: resourceResponse.data,
-            activity: activityResponse.data,
+            activity1: activityResponse1.data,
+            activity2: activityResponse2.data,
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -193,4 +226,3 @@ app.post('/api/createResource', async (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
-
