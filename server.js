@@ -496,6 +496,10 @@
 
 // --------------------------------------
 
+// 
+
+
+
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
@@ -614,7 +618,7 @@ app.post('/api/createResource', async (req, res) => {
             }
         );
 
-        // Third API call to assign resource to the job
+        // Third API call to assign resource to the job as applied
         const resourceApplicationData = {
             trackerrms: {
                 resourceApplication: {
@@ -625,8 +629,8 @@ app.post('/api/createResource', async (req, res) => {
                     instructions: {
                         opportunityid: jobCode,
                         resourceid: recordId,
-                        assigntolist: "short",
-                        shortlistedby: "resource",
+                        assigntolist: "short",  // Change to "long" for applied
+                        shortlistedby: "user",
                         source: "Website"
                     }
                 }
@@ -655,9 +659,39 @@ app.post('/api/createResource', async (req, res) => {
     }
 });
 
+app.post('/api/attachDocument', async (req, res) => {
+    const documentData = req.body;
+    documentData.trackerrms.attachDocument.credentials = {
+        username: process.env.TRACKERRMS_USERNAME,
+        password: process.env.TRACKERRMS_PASSWORD,
+    };
+    documentData.trackerrms.attachDocument.file.recordId = req.body.recordId;
+
+    try {
+        const authHeader = 'Basic ' + Buffer.from(
+            `${process.env.TRACKERRMS_USERNAME}:${process.env.TRACKERRMS_PASSWORD}`
+        ).toString('base64');
+
+        const documentResponse = await axios.post(
+            'https://evoapius.tracker-rms.com/api/widget/attachDocument',
+            documentData,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: authHeader,
+                },
+            }
+        );
+
+        res.status(200).json({
+            document: documentResponse.data,
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
-
-
 
