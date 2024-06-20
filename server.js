@@ -830,7 +830,7 @@ app.post('/api/createResource', async (req, res) => {
                     },
                     instructions: {
                         opportunityid: jobCode,
-                        // resourceid: recordId,
+                        resourceid: recordId,
                         assigntolist: "short", 
                         shortlistedby: "user",
                         source: "Website",
