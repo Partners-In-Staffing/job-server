@@ -752,13 +752,15 @@ app.post('/api/createResource', async (req, res) => {
 
         // Use the local date and time from the client
         const { localDateTime } = formData.trackerrms.createResource;
+        const fullName = formData.trackerrms.createResource.resource.fullname;
+
 
         // First activity data
         const activityData1 = {
             trackerrms: {
                 createActivity: {
                     activity: {
-                        subject: `Filled out website application for ${jobCode}`,
+                        subject: `Filled out application for job ${jobCode}.`,
                         type: 'Email',
                         date: localDateTime.date,
                         time: localDateTime.time,
@@ -778,7 +780,7 @@ app.post('/api/createResource', async (req, res) => {
             trackerrms: {
                 createActivity: {
                     activity: {
-                        subject: `Applied to ${jobCode}`,
+                        subject: `${fullName} has applied.`,
                         type: 'Email',
                         date: localDateTime.date,
                         time: localDateTime.time,
