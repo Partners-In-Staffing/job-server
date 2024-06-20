@@ -758,7 +758,7 @@ app.post('/api/createResource', async (req, res) => {
             trackerrms: {
                 createActivity: {
                     activity: {
-                        subject: `Applied to ${jobCode}`,
+                        subject: `Filled out website application for ${jobCode}`,
                         type: 'Email',
                         date: localDateTime.date,
                         time: localDateTime.time,
@@ -832,7 +832,7 @@ app.post('/api/createResource', async (req, res) => {
                         opportunityid: jobCode,
                         resourceid: recordId,
                         assigntolist: "short", 
-                        shortlistedby: "user",
+                        shortlistedby: "resource",
                         source: "Website",
                     }
                 }
