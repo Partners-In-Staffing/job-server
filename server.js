@@ -659,6 +659,11 @@ app.post('/api/createResource', async (req, res) => {
     }
 });
 
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
+
+
 // app.post('/api/attachDocument', async (req, res) => {
 //     const documentData = req.body;
 //     documentData.trackerrms.attachDocument.credentials = {
@@ -691,9 +696,9 @@ app.post('/api/createResource', async (req, res) => {
 //     }
 // });
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+// app.listen(port, () => {
+//     console.log(`Server is running on port ${port}`);
+// });
 
 // _________________________________________________________________________
 
