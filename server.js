@@ -753,7 +753,7 @@ app.post('/api/createResource', async (req, res) => {
             trackerrms: {
                 createActivity: {
                     activity: {
-                        subject: 'New Activity',
+                        subject: `Applied to ${jobCode}`,
                         type: 'Email',
                         date: localDateTime.date,
                         time: localDateTime.time,
@@ -773,7 +773,7 @@ app.post('/api/createResource', async (req, res) => {
             trackerrms: {
                 createActivity: {
                     activity: {
-                        subject: 'New Activity',
+                        subject: `Applied to ${jobCode}`,
                         type: 'Email',
                         date: localDateTime.date,
                         time: localDateTime.time,
