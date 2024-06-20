@@ -828,6 +828,7 @@ app.post('/api/createResource', async (req, res) => {
                         resourceid: recordId,
                         assigntolist: "short",  
                         shortlistedby: "user",
+                        status: "external application",
                         source: "Website"
                     }
                 }
